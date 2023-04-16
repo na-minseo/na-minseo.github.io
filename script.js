@@ -1,27 +1,84 @@
-/* 버튼 스타일링 예시 */
-button {
-  width: 100%;
-  height: 40px;
-  font-size: 18px;
-  border: none;
-  border-radius: 5px;
-  background-color: #ffcccb; /* 버튼 배경색 */
-  color: #333333;
-  cursor: pointer;
+// 계산기의 초기 값 설정
+let result = 0;
+let currentInput = '0';
+let operator = '';
+
+// 화면에 표시되는 숫자를 업데이트하는 함수
+function updateDisplay() {
+  const display = document.getElementById('display');
+  display.innerText = currentInput;
 }
 
-button:hover {
-  background-color: #ff9999; /* 버튼 호버 배경색 */
-  color: #ffffff; /* 호버 시 글자색 변경 */
+// 숫자 버튼 클릭 시 호출되는 함수
+function inputNumber(num) {
+  if (currentInput === '0') {
+    currentInput = num.toString();
+  } else {
+    currentInput += num.toString();
+  }
+  updateDisplay();
 }
 
-/* 계산기 배경색 및 폰트 설정 예시 */
-#calculator {
-  max-width: 200px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #e0e0e0; /* 계산기 배경색 */
-  border-radius: 10px; /* 계산기 테두리 둥글게 */
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  font-family: 'Noto Sans KR', sans-serif; /* 원하는 폰트로 변경 */
+// 연산자 버튼 클릭 시 호출되는 함수
+function inputOperator(op) {
+  operator = op;
+  result = parseInt(currentInput);
+  currentInput = '0';
 }
+
+// 등호 버튼 클릭 시 호출되는 함수
+function calculate() {
+  const display = document.getElementById('display');
+  let num = parseInt(currentInput);
+
+  switch (operator) {
+    case '+':
+      result += num;
+      break;
+    case '-':
+      result -= num;
+      break;
+    case '*':
+      result *= num;
+      break;
+    case '/':
+      result /= num;
+      break;
+  }
+
+  currentInput = result.toString();
+  operator = '';
+  updateDisplay();
+}
+
+// 초기화 버튼 클릭 시 호출되는 함수
+function clear() {
+  result = 0;
+  currentInput = '0';
+  operator = '';
+  updateDisplay();
+}
+
+// 숫자 버튼에 이벤트 리스너 등록
+const numberButtons = document.getElementsByClassName('number');
+for (let i = 0; i < numberButtons.length; i++) {
+  numberButtons[i].addEventListener('click', function() {
+    inputNumber(parseInt(this.innerText));
+  });
+}
+
+// 연산자 버튼에 이벤트 리스너 등록
+const operatorButtons = document.getElementsByClassName('operator');
+for (let i = 0; i < operatorButtons.length; i++) {
+  operatorButtons[i].addEventListener('click', function() {
+    inputOperator(this.innerText);
+  });
+}
+
+// 등호 버튼에 이벤트 리스너 등록
+const equalButton = document.getElementById('equal');
+equalButton.addEventListener('click', calculate);
+
+// 초기화 버튼에 이벤트 리스너 등록
+const clearButton = document.getElementById('clear');
+clearButton.addEventListener('click', clear);
